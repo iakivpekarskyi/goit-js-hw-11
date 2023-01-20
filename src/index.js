@@ -1,24 +1,27 @@
+import { fetchImages } from './js/fetchImages';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import fetchPictures from './js/fetchPictures';
 
 const searchInput = document.querySelector('.search-form__input');
-const searchBtn = document.querySelector('.search-form__button');
+const btnSearch = document.querySelector('.search-form__button');
+const gallery = document.querySelector('.gallery');
 
-searchInput.addEventListener('input', onSearch);
+btnSearch.addEventListener('click', onSearch);
 
-function onSearch() {
+function onSearch(event) {
+  event.preventDefault();
   const inputValue = searchInput.value.trim();
-  if (!inputValue) {
+  if (!inputValue !== '') {
+    fetchImages(inputValue);
     return;
   }
 }
 
-fetchPictures(searchInput).then(pictures => {
-  Notify.info('Hooray! We found ${totalHits} images.');
-  return;
-});
+// fetchPictures(searchInput).then(pictures => {
+//   Notify.info('Hooray! We found ${totalHits} images.');
+//   return;
+// });
 
 //   function createGalleryMarkup(fetchPictures) {
 //     return fetchPictures
