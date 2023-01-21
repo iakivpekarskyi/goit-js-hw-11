@@ -3,43 +3,30 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const searchInput = document.querySelector('.search-form__input');
-const btnSearch = document.querySelector('.search-form__button');
-const gallery = document.querySelector('.gallery');
+const searchInput = document.querySelector('#search-form');
 
-btnSearch.addEventListener('click', onSearch);
+// const gallery = document.querySelector('.gallery');
+
+searchInput.addEventListener('submit', onSearch);
 
 function onSearch(event) {
   event.preventDefault();
-  const inputValue = searchInput.value.trim();
+  const inputValue = event.currentTarget.searchQuery.value;
   if (!inputValue !== '') {
-    fetchImages(inputValue);
+    fetchImages();
     return;
   }
 }
 
-// fetchPictures(searchInput).then(pictures => {
-//   Notify.info('Hooray! We found ${totalHits} images.');
-//   return;
-// });
-
-//   function createGalleryMarkup(fetchPictures) {
-//     return fetchPictures
-//       .map(({ original, preview, description }) => {
-//         return `
-// <div class="gallery">
-//   <a href="${original}">
-//     <img src="${preview}" alt="${description}" />
-//   </a>
-// </div>
-//       `;
-//       })
-//       .join('');
-//   }
-
-//   galleryContainer.insertAdjacentHTML('beforeend', gallery);
-//   const lightbox = new SimpleLightbox('.gallery a', {
-//     captionDelay: 250,
-//     captionsData: 'alt',
-//   });
-//
+fetchImages(inputValue).then(response => {
+  const result = response.data.hits;
+  console.log(result);
+  if (result === 0) {
+    Notify.warning(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
+  } else {
+    // galleryMarkup(data.hits);
+    Notify.info(`Hooray! We found ${response.data.totalHits} images.`);
+  }
+});
