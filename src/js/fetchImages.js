@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-export const fetchImages = async inputValue => {
+export const fetchImages = async (inputValue, page) => {
   const BASE_URL = 'https://pixabay.com/api/';
   const API_KEY = '32920278-ac1f185981fb853c8559f3f77';
-  const filter = `?key=${API_KEY}&q=${inputValue}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40`;
+  const filter = `?key=${API_KEY}&q=${inputValue}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${page}`;
 
   return await axios.get(`${BASE_URL}${filter}`);
 };

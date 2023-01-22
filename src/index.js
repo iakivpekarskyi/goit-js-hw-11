@@ -2,9 +2,12 @@ import { fetchImages } from './js/fetchImages';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import { galleryMarkup } from './js/gallery';
 
 const searchInput = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
+const btnLoadMore = document.querySelector('.js-load');
+let page = 1;
 
 const SimpleLightboxGallery = new SimpleLightbox('.gallery a', {
   captions: true,
@@ -13,6 +16,7 @@ const SimpleLightboxGallery = new SimpleLightbox('.gallery a', {
 });
 
 searchInput.addEventListener('submit', onSearch);
+btnLoadMore.addEventListener('click', onLoad);
 
 function onSearch(event) {
   event.preventDefault();
@@ -34,7 +38,9 @@ function onSearch(event) {
       galleryMarkup(response.data.hits);
       Notify.info(`Hooray! We found ${response.data.totalHits} images.`);
     }
+    btnLoadMore.hidden = false;
   });
+
   function galleryMarkup(images) {
     console.log(images);
     const markup = images
@@ -55,7 +61,6 @@ function onSearch(event) {
       <b>Comments:${image.comments}</b>
     </p>
     <p class="info-item">
-    <ion-icon name="cloud-download-outline"></ion-icon>
       <b>Downloads:${image.downloads}</b>
     </p>
   </div>
@@ -66,4 +71,9 @@ function onSearch(event) {
     gallery.innerHTML = markup;
     SimpleLightboxGallery.refresh();
   }
+}
+
+function onLoad() {
+  page += 1;
+  fetchImages(page).then(data => console.log(data));
 }

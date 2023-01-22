@@ -13,8 +13,11 @@
 
 .photo {
   display: block;
-  width: 350px;
+  width: 100%;
+  // height: auto;
+  max-width: 350px;
   height: 250px;
+  object-fit: cover;
 }
 
 .info {
