@@ -10,7 +10,7 @@
 
   padding: 25px 0 25px 0;
 
-  background: #5db792;
+  background: #2b2b2b;
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.15);
 }
 
@@ -22,9 +22,9 @@
   font-size: 16px;
 
   outline: none;
-  border: none;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border: 2px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .search-form__button {
@@ -32,9 +32,9 @@
   height: 40px;
   color: rgb(255, 255, 255);
   font-size: 16px;
-  background-color: rgb(24, 157, 106);
+  background-color: #404040;
 
-  border: none;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border: 2px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }

@@ -1,12 +1,11 @@
-import { fetchImages } from './js/fetchImages';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import { galleryMarkup } from './js/gallery';
+import axios from 'axios';
 
 const searchInput = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
-const btnLoadMore = document.querySelector('.js-load');
+const btnLoadMore = document.querySelector('.load-more');
 let page = 1;
 
 const SimpleLightboxGallery = new SimpleLightbox('.gallery a', {
@@ -21,32 +20,57 @@ btnLoadMore.addEventListener('click', onLoad);
 function onSearch(event) {
   event.preventDefault();
   gallery.innerHTML = '';
-  const inputValue = event.currentTarget.searchQuery.value.trim();
+  const inputValue = searchInput.searchQuery.value.trim();
   console.log(event.currentTarget.searchQuery.value);
   if (!inputValue) {
     return;
   }
-  fetchImages(inputValue).then(response => {
+  pixabayAPI(inputValue, page);
+}
+
+async function pixabayAPI(name, page) {
+  const BASE_URL = 'https://pixabay.com/api/';
+  const options = {
+    params: {
+      key: '32920278-ac1f185981fb853c8559f3f77',
+      q: name,
+      image_type: 'photo',
+      orientation: 'horizontal',
+      safesearch: 'true',
+      page: page,
+      per_page: 40,
+    },
+  };
+
+  try {
+    const response = await axios.get(BASE_URL, options);
     const result = response.data.hits.length;
+    const images = response.data.hits;
+
     if (result === 0) {
       gallery.innerHTML = '';
       Notify.warning(
-        'Sorry, there are no images matching your search query. Please try again.'
+        `Sorry, there are no images matching your search query. Please try again.`
       );
     } else {
       gallery.innerHTML = '';
-      galleryMarkup(response.data.hits);
       Notify.info(`Hooray! We found ${response.data.totalHits} images.`);
     }
-    btnLoadMore.hidden = false;
-  });
 
-  function galleryMarkup(images) {
-    console.log(images);
-    const markup = images
-      .map(
-        image =>
-          `
+    btnLoadMore.hidden = false;
+
+    galleryMarkup(images);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function galleryMarkup(images) {
+  console.log(images);
+  const markup = images
+    .map(
+      image =>
+        `
 <div class="photo-card">
 <ion-icon name="cloud-download-outline"></ion-icon>
  <a href="${image.largeImageURL}"><img class="photo" src="${image.webformatURL}" alt="${image.tags}" title="${image.tags}" loading="lazy"/></a>
@@ -66,14 +90,15 @@ function onSearch(event) {
   </div>
 </div>
 `
-      )
-      .join('');
-    gallery.innerHTML = markup;
-    SimpleLightboxGallery.refresh();
-  }
+    )
+    .join('');
+  gallery.innerHTML = markup;
+  SimpleLightboxGallery.refresh();
 }
 
 function onLoad() {
   page += 1;
-  fetchImages(page).then(data => console.log(data));
+  const name = searchInput.querySelector('input').value.trim();
+  console.log(name);
+  pixabayAPI(name, page);
 }
