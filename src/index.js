@@ -48,24 +48,20 @@ async function pixabayAPI(name, page) {
     const images = response.data.hits;
 
     if (result === 0) {
-      gallery.innerHTML = '';
       Notify.warning(
         `Sorry, there are no images matching your search query. Please try again.`
       );
     } else {
-      gallery.innerHTML = '';
       Notify.info(`Hooray! We found ${response.data.totalHits} images.`);
+      createMarkup(images);
     }
-
     btnLoadMore.hidden = false;
-
-    galleryMarkup(images);
   } catch (error) {
     console.log(error);
   }
 }
 
-function galleryMarkup(images) {
+function createMarkup(images) {
   console.log(images);
   const markup = images
     .map(
@@ -92,13 +88,13 @@ function galleryMarkup(images) {
 `
     )
     .join('');
-  gallery.innerHTML = markup;
+  gallery.insertAdjacentHTML('beforeend', markup);
   SimpleLightboxGallery.refresh();
 }
 
 function onLoad() {
-  page += 1;
   const name = searchInput.querySelector('input').value.trim();
-  console.log(name);
   pixabayAPI(name, page);
+  page += 1;
+  createMarkup(images);
 }
